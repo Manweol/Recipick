@@ -3,15 +3,15 @@ package com.example.uielementsp2
 import android.content.Intent
 import android.os.Bundle
 import android.view.*
-import android.widget.AdapterView.AdapterContextMenuInfo
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.ListView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 
 
 var selectedSong = arrayListOf<String>()
-val productsArray = arrayOf(
+var songsArray = arrayOf(
         "Paubaya",
         "Ang Iwasan",
         "Patawad",
@@ -26,7 +26,12 @@ val productsArray = arrayOf(
         "Awit Ng Bagong Taon",
         "Ghosting",
         "The Encyclopedia Salesman",
-        "Mall Rats"
+        "Mall Rats",
+        "Patawad, Paalam",
+        "Ikaw Pa Rin",
+        "Beautiful", "" +
+        "Mabagal",
+        "Kahit Kunwari Man Lang"
 )
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,7 +39,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
 
-        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, productsArray)
+        val adapter = ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, songsArray)
         val productsListView = findViewById<ListView>(R.id.productsListView)
         productsListView.adapter = adapter
         registerForContextMenu(productsListView)
@@ -54,9 +59,14 @@ class MainActivity : AppCompatActivity() {
     override fun onContextItemSelected(item: MenuItem): Boolean {
         return when(item.itemId){
             R.id.add_to_queue -> {
-                Toast.makeText(this, "Added to Queue", Toast.LENGTH_LONG).show()
-                val info = item.menuInfo as AdapterContextMenuInfo
-                selectedSong.add(productsArray[info.position])
+                val songList: ListView = findViewById<ListView>(R.id.productsListView)
+                val snackbar: Snackbar = Snackbar.make(songList , "Song added to queue." , Snackbar.LENGTH_SHORT)
+                snackbar.setAction("Go To Song Queue" , View.OnClickListener {
+                    startActivity(Intent(applicationContext , QueueActivity::class.java))
+                })
+                snackbar.show()
+                val info = item.menuInfo as AdapterView.AdapterContextMenuInfo
+                selectedSong.add(songsArray[info.position])
                 true
             }
             else-> super.onContextItemSelected(item)
